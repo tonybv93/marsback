@@ -26,6 +26,6 @@ public class ItemDTO {
 	private String version;
 	private String photoUri;
 
-	private SPCategoryDetailsDTO category;
+	private CategoryDetailsDTO category;
 	private List<ItemTagDTO> tags = new ArrayList<>();
 }

@@ -13,10 +13,10 @@ import com.mars.auth.entity.Users;
 import com.mars.shared.OperationResponseDTO;
 import com.mars.shared.PageResponseDTO;
 import com.mars.shared.PickListDTO;
+import com.mars.warehouse.dto.CategoryDetailsDTO;
 import com.mars.warehouse.dto.ISpItemsList;
 import com.mars.warehouse.dto.ItemDTO;
 import com.mars.warehouse.dto.ItemTagDTO;
-import com.mars.warehouse.dto.SPCategoryDetailsDTO;
 import com.mars.warehouse.entity.Item;
 import com.mars.warehouse.repository.IItemRepository;
 import com.mars.warehouse.repository.IItemSubCategoryRepository;
@@ -52,8 +52,6 @@ public class ItemServiceImp implements IItemService {
 				.map(p-> new ItemTagDTO(p.getId(), p.getName(), p.getDescription(), p.getColor(), p.getCategory()))
 				.collect(Collectors.toList());
 		
-		SPCategoryDetailsDTO category = subcatrepo.findByItem(id).orElse(null);
-		
 		return new ItemDTO(
 				item.getId(), 
 				item.getName(), 
@@ -68,7 +66,7 @@ public class ItemServiceImp implements IItemService {
 				item.getCalification(),
 				item.getItemVersion(),
 				item.getPhotoUri(),
-				category,
+				subcatrepo.findByItem(id).map(p -> new CategoryDetailsDTO(p.getCatid(), p.getCatname(), p.getSubid(), p.getSubname()) ).orElse(null),
 				tags);
 	}
 
@@ -78,7 +76,6 @@ public class ItemServiceImp implements IItemService {
 		
 		try {
 			if (dto.getId()==null) {
-				System.out.println("NUEVO ITEM + " + dto.getCategory().getSubid());
 				item = new Item(
 						null, 
 						dto.getName(), 
@@ -115,12 +112,10 @@ public class ItemServiceImp implements IItemService {
 				item.setUpdatedBy(u.getUsername());
 				item.setUpdatedAt(new Date());
 			}
-			System.out.println("PRE SAVE");
 			item = itemrepo.save(item);
-			System.out.println("post SAVE");
+			
 			return new OperationResponseDTO(item.getId(), null, true, null);
 		} catch (Exception e) {
-			System.out.println(e);
 			return new OperationResponseDTO(null, null, false, e.getMessage());
 		}
 	}

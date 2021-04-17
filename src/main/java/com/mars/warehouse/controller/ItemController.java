@@ -1,5 +1,6 @@
 package com.mars.warehouse.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,13 +30,13 @@ public class ItemController {
 	
 	
 	@GetMapping("/item/suggest")
-	private List<PickListDTO> getItemsSuggestions(@RequestParam String filter) {
-		return null;
+	public List<PickListDTO> getItemsSuggestions(@RequestParam String filter) {
+		return new ArrayList<>();
 	}
 	
 	
 	@GetMapping("/items")
-	private PageResponseDTO<ISpItemsList> getAllItems(
+	public PageResponseDTO<ISpItemsList> getAllItems(
 			@RequestParam int page, 
 			@RequestParam int size,
 			@RequestParam(defaultValue = "ALL") String subcategory,
@@ -46,18 +47,18 @@ public class ItemController {
 	}
 	
 	@GetMapping("/item")
-	private ItemDTO getItem(@RequestParam int id) {
+	public ItemDTO getItem(@RequestParam int id) {
 		return items.getItem(id);
 	}
 	
 	@PostMapping("/item")
-	private OperationResponseDTO saveItem(@RequestBody ItemDTO item, Authentication auth) {
+	public OperationResponseDTO saveItem(@RequestBody ItemDTO item, Authentication auth) {
 		Users u = (Users) auth.getPrincipal();
 		return items.saveItem(item, u);
 	}
 	
 	@DeleteMapping("/item")
-	private OperationResponseDTO deleteItem(@RequestParam int id) {
+	public OperationResponseDTO deleteItem(@RequestParam int id) {
 		return items.deleteItem(id);
 	}
 }

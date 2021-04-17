@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SPCategoryDetailsDTO {
+public class CategoryDetailsDTO {
 	Integer catid;
 	String catname;
 	Integer subid;

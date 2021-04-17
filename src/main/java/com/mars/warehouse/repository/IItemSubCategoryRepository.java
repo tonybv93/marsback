@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.mars.warehouse.dto.SPCategoryDetailsDTO;
+import com.mars.warehouse.dto.ISpCategoryDetailDTO;
 import com.mars.warehouse.entity.ItemSubcategory;
 
 @Repository
@@ -20,6 +20,6 @@ public interface IItemSubCategoryRepository extends JpaRepository<ItemSubcategor
 	List<ItemSubcategory> findSuggestions(String  filter, int idcategory);
 
 	@Query(nativeQuery = true, value = "call sp_item_category(?1)")
-	Optional<SPCategoryDetailsDTO> findByItem(int id_item);
+	Optional<ISpCategoryDetailDTO> findByItem(int iditem);
 	
 }

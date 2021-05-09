@@ -27,29 +27,31 @@ public class ICategoryController {
 	// CATEGORY 
 	
 	@GetMapping("/categories/suggest")
-	private List<PickListDTO> getCategorySuggestions(@RequestParam String text){
+	public List<PickListDTO> getCategorySuggestions(@RequestParam String text){
 		return categorys.getCategorySuggestions(text);
 	}
 	
 	@GetMapping("/categories")
-	private List<ItemCategoryDTO> getAllCategories(){
+	public List<ItemCategoryDTO> getAllCategories(){
 		return categorys.getAllCategories();
 	}
 	
 	@PostMapping("/category")
-	private OperationResponseDTO saveCategory(@RequestBody ItemCategoryDTO dto, Authentication auth){
+	public OperationResponseDTO saveCategory(@RequestBody ItemCategoryDTO dto, Authentication auth){
 		Users u = (Users) auth.getPrincipal();
 		return categorys.saveCategory(dto,u);
 	}
 	
 	@DeleteMapping("/category")
-	private OperationResponseDTO deleteCategory(@RequestParam int id){
+	public OperationResponseDTO deleteCategory(@RequestParam int id){
 		return categorys.deleteCategory(id);
 	}
 	
+	
 	// SUBCATEGORY
+	
 	@GetMapping("/subcategories/suggest")
-	private List<PickListDTO> getSubcategorySuggestions(
+	public List<PickListDTO> getSubcategorySuggestions(
 			@RequestParam String text,
 			@RequestParam(defaultValue = "0") int filter
 			){
@@ -57,13 +59,13 @@ public class ICategoryController {
 	}
 	
 	@PostMapping("/subcategory")
-	private OperationResponseDTO saveSubcategory(@RequestBody ItemCategoryDTO dto, Authentication auth){
+	public OperationResponseDTO saveSubcategory(@RequestBody ItemCategoryDTO dto, Authentication auth){
 		Users u = (Users) auth.getPrincipal();
 		return categorys.saveSubcategory(dto, u );
 	}
 	
 	@DeleteMapping("/subcategory")
-	private OperationResponseDTO deleteSubcategory(@RequestParam int id){
+	public OperationResponseDTO deleteSubcategory(@RequestParam int id){
 		return categorys.deleteSubcategory(id);
 	}
 }

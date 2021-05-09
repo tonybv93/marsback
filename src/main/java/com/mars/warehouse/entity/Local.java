@@ -22,7 +22,7 @@ import lombok.Setter;
 public class Local extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	protected Integer id;
+	private Integer id;
 	private String name;
 	private String address;
 	private String phone;

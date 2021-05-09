@@ -14,8 +14,5 @@ public interface IItemService {
 	public ItemDTO getItem(int id);
 	public PageResponseDTO<ISpItemsList> getItemList(String filter, String category, String subcategory, int page, int size);
 	public OperationResponseDTO saveItem(ItemDTO dto, Users u);
-	public OperationResponseDTO deleteItem(int id);
-	
-	// TAGs
-	
+	public OperationResponseDTO deleteItem(int id);	
 }

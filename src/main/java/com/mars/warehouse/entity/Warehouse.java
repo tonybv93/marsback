@@ -25,16 +25,16 @@ import lombok.Setter;
 public class Warehouse extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	protected Integer id;
+	private Integer id;
 	private String name;
 	private String description;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "type_code")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "type_id")
 	private WarehouseType type;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "local_code")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "local_id")
 	private Local local;
 
 }

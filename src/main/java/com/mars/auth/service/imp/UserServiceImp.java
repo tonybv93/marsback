@@ -14,14 +14,16 @@ import org.springframework.web.server.ResponseStatusException;
 import com.mars.auth.dto.MenuDTO;
 import com.mars.auth.dto.RequestLogin;
 import com.mars.auth.dto.ResponseLogin;
-import com.mars.auth.entity.Menus;
+import com.mars.auth.dto.UserDTO;
+import com.mars.auth.entity.Menu;
 import com.mars.auth.entity.Users;
-import com.mars.auth.entity.Views;
+import com.mars.auth.repository.IMenuRepository;
 import com.mars.auth.repository.IUsersRepository;
-import com.mars.auth.repository.IViewMenuRepository;
-import com.mars.auth.repository.IViewsRepository;
 import com.mars.auth.service.IUserService;
 import com.mars.config.JWTUtil;
+import com.mars.shared.OperationResponseDTO;
+import com.mars.shared.PageResponseDTO;
+import com.mars.shared.PickListDTO;
 
 @Service
 public class UserServiceImp implements IUserService {
@@ -29,8 +31,7 @@ public class UserServiceImp implements IUserService {
 	@Autowired private JWTUtil jwtUtil;
 	@Autowired private BCryptPasswordEncoder encoder;
 	@Autowired private IUsersRepository userRepo;
-	@Autowired private IViewsRepository viewRepo;
-	@Autowired private IViewMenuRepository viewmenuRepo;
+	@Autowired private IMenuRepository menuRepo;
 	
 	
 	@Override
@@ -50,40 +51,58 @@ public class UserServiceImp implements IUserService {
 
 	@Override
 	public List<MenuDTO> getUserMenus(Users u) {
-		List<MenuDTO> menus = new ArrayList<>();
-		List<MenuDTO> submenus = new ArrayList<>();
-		List<Views> views = viewRepo.findViewsByUser(u.getId());
-		
-		for(Views v:views) {
-			viewmenuRepo.findAllByViewAndEnable(v, true).forEach( rm ->{
-				Menus menu = rm.getMenu();
-				if (rm.getMenu().getTypem().equals("CHILD")) {
-					submenus.add(
-						new MenuDTO(menu.getCode(), menu.getName(), menu.getOrderm(), menu.getIcon(),
-								menu.getParentCode(),"CHILD", menu.getLink(),null)
-					);
-				}else { // PARENT & ALONE
-					menus.add(
-						new MenuDTO(menu.getCode(), menu.getName(), menu.getOrderm(), menu.getIcon(),
-								null,menu.getTypem(), menu.getLink(),new ArrayList<>())
-					);
-				}
-			});	
+		List<Menu> menus = menuRepo.getUserMenus(u.getId());
+		List<MenuDTO> modules = new ArrayList<>();
+		// Reconocer los padres
+		for(Menu m : menus) {			
+			if (modules.stream().noneMatch( p->p.getCode().equals(m.getModule().getCode()) ) )				
+				modules.add(new MenuDTO(
+						m.getModule().getCode(), 
+						m.getModule().getName(),
+						m.getModule().getMOrder(), 
+						m.getModule().getIcon(), 
+						"PAREN", 
+						"", 
+						new ArrayList<>(),
+						true,null));
 		}
+		// Agregar hijos
+		for (MenuDTO module : modules) {			
+			module.getSubmenus().addAll(					
+					menus.stream()
+					.filter(p-> p.getModule().getCode().equals(module.getCode()))
+					.sorted(Comparator.comparing(Menu::getMOrder))
+					.map(m -> new MenuDTO(m.getCode(), m.getName(), m.getMOrder(), m.getIcon(), m.getMType(), m.getLink(), null, true,null))
+					.collect(Collectors.toList())
+			);			
+		}			
+		return modules;
 		
-		// BORRAR DUPLICADOS
-		List<MenuDTO> unqMenus = menus.stream().distinct().collect(Collectors.toList());
-		List<MenuDTO> unqSubmenus = submenus.stream().distinct().collect(Collectors.toList());
-		
-		// AGREGAR HIJOS A PADRES
-		for (MenuDTO sm:unqMenus) {
-			if (sm.getType().equals("PAREN"))
-				sm.getSubmenus().addAll(
-						unqSubmenus.stream().filter(p-> p.getParentCode().equals(sm.getCode()))
-							.collect(Collectors.toList())
-						);
+	}
+
+	@Override
+	public OperationResponseDTO changePassword(String old, String newpass, Users u) {
+		try {			
+			if (encoder.matches(old, u.getPassword())) {
+				u.setPassword(encoder.encode(newpass));
+				userRepo.save(u);
+				return new OperationResponseDTO(null, null, true, "La contraseña se cambió correctamente.");
+			}
+			return new OperationResponseDTO(null, null, false, "La contraseña es incorrecta.");
+		} catch (Exception e) {
+			return new OperationResponseDTO(null, null, false, e.getMessage());
 		}
-		return unqMenus.stream().sorted(Comparator.comparing(MenuDTO::getOrder)).collect(Collectors.toList());
+	}
+
+	@Override
+	public PageResponseDTO<UserDTO> getAllUsers(String filter, String bu, int status, int page, int size) {
+		// TODO: Crear SP User list
+		return new PageResponseDTO<>(page, size, 0, new ArrayList<UserDTO>());
+	}
+
+	@Override
+	public List<PickListDTO> searchUsers(String filter) {
+		return null;
 	}
 
 }

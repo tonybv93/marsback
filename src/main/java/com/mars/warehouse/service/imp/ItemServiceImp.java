@@ -39,7 +39,7 @@ public class ItemServiceImp implements IItemService {
 
 	@Override
 	public List<PickListDTO> getItemSuggestions(String text) {
-		return itemrepo.findTop5ByNameContaining(text).stream()
+		return itemrepo.findTop5ByNameContainingAndEnable(text,true).stream()
 				.map(p-> new PickListDTO(null, p.getId(), p.getName() + " " + p.getDescription(), p.getModel() + " - " + p.getBrand()))
 				.collect(Collectors.toList());
 	}

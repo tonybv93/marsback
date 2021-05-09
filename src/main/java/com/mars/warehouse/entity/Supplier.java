@@ -13,11 +13,13 @@ import com.mars.shared.BaseEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @DynamicInsert
 @DynamicUpdate
@@ -35,6 +37,7 @@ public class Supplier extends BaseEntity{
 	private String city;
 	private String email;
 	private String phone;
+	private String cel;
 	private String webpage;
 	private String contactPerson;
 }

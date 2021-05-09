@@ -5,21 +5,18 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
 @Getter
-public class MenuDTO {
+@Setter
+@AllArgsConstructor
+public class ModuleDTO {
 	private String code;
 	private String name;
 	private int order;
 	private String icon;
-	private String type; 
-	private String link; 
-	private List<MenuDTO> submenus = new ArrayList<>();
 	private boolean enable;
-	private String module;
+	private List<SegmentDTO> segments = new ArrayList<>();
+	private List<SegmentDTO> functions = new ArrayList<>();
+	private List<MenuDTO> menus = new ArrayList<>();
 }

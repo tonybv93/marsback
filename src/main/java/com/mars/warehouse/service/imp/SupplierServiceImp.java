@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.mars.auth.entity.Users;
@@ -17,13 +18,14 @@ import com.mars.warehouse.entity.Supplier;
 import com.mars.warehouse.repository.ISupplierRepository;
 import com.mars.warehouse.service.ISupplierService;
 
+@Service
 public class SupplierServiceImp implements ISupplierService {
 
 	@Autowired ISupplierRepository suprepo;
 	
 	@Override
 	public List<PickListDTO> getSupplierSuggestion(String text) {
-		return suprepo.findTop5ByNameContaining(text).stream()
+		return suprepo.findTop5ByNameContainingAndEnable(text,true).stream()
 				.map(p-> new PickListDTO(null, p.getId(), p.getName(), p.getLegalId() ))
 				.collect(Collectors.toList());
 	}
@@ -39,6 +41,7 @@ public class SupplierServiceImp implements ISupplierService {
 				p.getCity(), 
 				p.getEmail(),
 				p.getPhone(), 
+				p.getCel(),
 				p.getWebpage(), 
 				p.getContactPerson()) )
 				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -46,7 +49,24 @@ public class SupplierServiceImp implements ISupplierService {
 
 	@Override
 	public PageResponseDTO<SupplierDTO> getSupplierList(String filter, int page, int size) {
-		return new PageResponseDTO<>(page, size, 0, suprepo.getSupplierList("%" + filter + "%", page*size, size));
+		return new PageResponseDTO<>(
+				page, 
+				size, 
+				0, 
+				suprepo.getSupplierList("%" + filter + "%", page*size, size).stream()
+				.map(p-> new SupplierDTO(
+						p.getId(), 
+						p.getName(),
+						p.getLegalid(),
+						p.getLegalname(), 
+						p.getAddress(),
+						p.getCity(),
+						p.getEmail(),
+						p.getPhone(),
+						p.getCel(),
+						p.getWebpage(),
+						p.getContact())).collect(Collectors.toList())
+				);
 	}
 
 	@Override
@@ -57,27 +77,28 @@ public class SupplierServiceImp implements ISupplierService {
 				supp = new Supplier(
 						null, 
 						dto.getName(), 
-						dto.getLegalId(),
-						dto.getLegalName(), 
+						dto.getLegalid(),
+						dto.getLegalname(), 
 						dto.getAddress(),
 						dto.getCity(),
 						dto.getEmail(),
 						dto.getPhone(),
+						dto.getCel(),
 						dto.getWebpage(),
-						dto.getContactPerson());
+						dto.getContact());
 				supp.setCreatedBy(u.getUsername());
 				
 			}else {
 				supp = suprepo.findById(dto.getId()).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND) );
 				supp.setName(dto.getName()); 
-				supp.setLegalId(dto.getLegalId());
-				supp.setLegalName(dto.getLegalName()); 
+				supp.setLegalId(dto.getLegalid());
+				supp.setLegalName(dto.getLegalname()); 
 				supp.setAddress(dto.getAddress());
 				supp.setCity(dto.getCity());
 				supp.setEmail(dto.getEmail());
 				supp.setPhone(dto.getPhone());
 				supp.setWebpage(dto.getWebpage());
-				supp.setContactPerson(dto.getContactPerson());
+				supp.setContactPerson(dto.getContact());
 				
 				supp.setUpdatedBy(u.getUsername());
 				supp.setUpdatedAt(new Date());

@@ -2,6 +2,8 @@ package com.mars.auth.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -16,13 +18,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class ModuleFunctions {
+public class UserFunctions {
 	@Id
-	private String code;
-	private String name;
-	private String description;	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "module")
-	private Module module;
+	@JoinColumn(name="id_user")
+	private Users user;
+	
+	private String functionCode;
+	private String accessLvl;
+
 }

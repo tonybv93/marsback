@@ -7,8 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import com.mars.shared.BaseEntity;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,31 +19,36 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Module extends BaseEntity{
+@Table(name = "sy_module")
+public class Module{
 	@Id
 	private String code;
 	
 	private String name;
-	private String description;
+	private String icon;
+	private int mOrder;
+	private boolean enable;
+	private int autoincMenu;
+	private int autoincSeg;
 	
 	@OneToMany(
 	        mappedBy = "module",
 	        cascade = CascadeType.ALL,
 	        orphanRemoval = true
 	    )
-	private List<Segments> segments = new  ArrayList<>();
+	private List<Segment> segments = new  ArrayList<>();
 	
 	@OneToMany(
 	        mappedBy = "module",
 	        cascade = CascadeType.ALL,
 	        orphanRemoval = true
 	    )
-	private List<ModuleFunctions> functions = new  ArrayList<>();
+	private List<Function> functions = new  ArrayList<>();
 	
 	@OneToMany(
 	        mappedBy = "module",
 	        cascade = CascadeType.ALL,
 	        orphanRemoval = true
 	    )
-	private List<Menus> menus = new  ArrayList<>();
+	private List<Menu> menus = new  ArrayList<>();
 }

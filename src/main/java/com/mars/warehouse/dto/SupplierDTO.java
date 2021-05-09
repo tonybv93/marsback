@@ -10,12 +10,13 @@ import lombok.Setter;
 public class SupplierDTO {
 	private Integer id;
 	private String name;	
-	private String legalId;	
-	private String legalName;	
+	private String legalid;	
+	private String legalname;	
 	private String address;
 	private String city;
 	private String email;
 	private String phone;
+	private String cel;
 	private String webpage;
-	private String contactPerson;
+	private String contact;
 }

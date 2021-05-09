@@ -1,6 +1,5 @@
 package com.mars.warehouse.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +30,7 @@ public class ItemController {
 	
 	@GetMapping("/item/suggest")
 	public List<PickListDTO> getItemsSuggestions(@RequestParam String filter) {
-		return new ArrayList<>();
+		return items.getItemSuggestions(filter);
 	}
 	
 	

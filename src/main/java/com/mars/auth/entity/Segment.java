@@ -1,12 +1,8 @@
 package com.mars.auth.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import com.mars.shared.BaseEntity;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,13 +14,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Segments extends BaseEntity{
+@Table(name = "sy_segment")
+public class Segment{
 	@Id
 	private String code;
+	private boolean enable;
 	private String name;
-	private String description;	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "module")
-	private Module module;
+	private String datafilter;	
+	private String module;
 }

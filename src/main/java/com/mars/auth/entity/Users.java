@@ -10,10 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.JoinColumn;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,16 +23,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@SuppressWarnings("serial")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Getter
 @Setter
 public class Users extends BaseEntity implements UserDetails{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Integer id;
@@ -52,15 +46,7 @@ public class Users extends BaseEntity implements UserDetails{
 	private String recoveryCode;
 	private boolean credentialExpired;
 	private boolean acceptedPolicies;
-	
-	// VIEWS: FRONT GUARDS
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-			name="user_views",
-			joinColumns = @JoinColumn(name="id_user"), 
-			inverseJoinColumns = @JoinColumn(name="id_view"))
-	private Set<Views> views;
-	
+
 	// AUTHORITIES: BACK PREAUTHORIZED
 	@OneToMany(
 			fetch = FetchType.EAGER,
@@ -68,16 +54,7 @@ public class Users extends BaseEntity implements UserDetails{
 	        cascade = CascadeType.ALL,
 	        orphanRemoval = true
 	    )
-	private Set<UserAuthorities> auths;
-	
-	// SEGMENTS: DATA FILTER
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-			name="user_segments",
-			joinColumns = @JoinColumn(name="id_user"), 
-			inverseJoinColumns = @JoinColumn(name="segment_code"))
-	private Set<Segments> segments;
-	
+	private Set<UserFunctions> auths;
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<GrantedAuthority> authorities = new HashSet<>();
